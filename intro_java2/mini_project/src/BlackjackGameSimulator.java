@@ -5,8 +5,12 @@ Assignment 8
 */
 
 /**
- * This class is the runner class and plays blackjack. The rules for this blackjack game are as follows:
+ * This class is the runner class and plays blackjack. The rules for this modified blackjack game are as follows:
  * - J's are worth 11, Q's are worth 12, K's are worth 13, A's are worth 1
+ * - when tied, the dealer wins
+ * - dealer has to hit at 17
+ * - player has to reload at 0 or when bankroll is negative
+ * - player is awarded money if beats the dealer
  * @author jwan
  * @version 1.0
  */
@@ -17,15 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlackjackGameSimulator {
+    // the Dealer class extends Player class and adds some functionality
+    private static Dealer dealer = new Dealer();
+    private static Player p1 = new Player();
+    // if a player is playing, this is set to true.
+    private static boolean playing = true;
+    private static Scanner sc = new Scanner(System.in);
+
     public static void main(String args[]) {
-        Player p1 = new Player();
-        // the Dealer class extends Player class and adds some functionality
-        Dealer dealer = new Dealer();
-
-        // if a plae
-        boolean playing = true;
-        Scanner sc = new Scanner(System.in);
-
         // reusable method, used at start of the game and when reloading when Player has lost all money.
         getMoney(sc, p1);
 
@@ -104,8 +107,9 @@ public class BlackjackGameSimulator {
      * @param deck The deck of cards
      * @param player the Player or participant
      * @param sc the scanner object
+     * @param hand the player's hand, used to calculate points.
      * @param bet the size of the bet that is being wagered.
-     * @return Nothing. Just causes side effects
+     * @param dealerHand the hand of the Dealer. Needed because if the player's starting hand is valid
      */
     private static void playerPlay(Deck deck, List<Card> hand, Player player, Scanner sc, int bet, List<Card> dealerHand) {
         System.out.println("It is the player's turn and player is wagering " + bet + " dollars");
@@ -149,17 +153,16 @@ public class BlackjackGameSimulator {
      * - J's are worth 11, Q's are worth 12, K's are worth 13, A's are worth 1
      * @param deck The deck of cards
      * @param player the Player or participant
+     * @param hand hand belonging to the Dealer.
+     * @param dealer The dealer who is playing
      * @param bet the size of the bet that is being wagered.
-     * @return Nothing. Just causes side effects
      */
     private static void dealerPlay(Deck deck, List<Card> hand, Dealer dealer, Player player, int bet) {
         System.out.println("Dealer's turn: ");
         System.out.println("Dealer turning hand faceup");
 
-        for(Card card : hand) {
-            card.turnFaceUp();
-            System.out.println("Dealer has: " + card.getFace() + " of " + " Suit: " + card.getSuit());
-        }
+        // see annotation below
+        describeHand(hand, "Dealer", "show");
 
         while(dealer.getPoints() < dealer.minimumStop && !dealer.busto()) {
             playRound(deck, hand, dealer, 1);
@@ -174,7 +177,6 @@ public class BlackjackGameSimulator {
      * This method handles the Player lost
      * @param player the Player or participant
      * @param bet the size of the bet that is being wagered.
-     * @return Nothing. Just causes side effects
      */
     private static void playerLoses(Player player, int bet) {
         System.out.println("Player lost");
@@ -204,11 +206,12 @@ public class BlackjackGameSimulator {
         // dealer cards should be hidden
         card1.turnFaceDown();
         hand.add(card1);
-        System.out.println("Drew card: " + card1.getFace() + " of " + " Suit: " + card1.getSuit());
 
         Card card2 = deck.drawCard();
         hand.add(card2);
-        System.out.println("Drew card: " + card2.getFace() + " of " + " Suit: " + card2.getSuit());
+
+        // see annotation below
+        describeHand(hand, "Dealer", "describe");
     }
 
     /**
@@ -241,7 +244,6 @@ public class BlackjackGameSimulator {
      * @param player The player who is betting against the dealer.
      * @param numberOfCardsToDeal 2 cards are dealt to the Player at the start of the game, 1 card when the player wants
      *                            to hit
-     * @return Nothing. Just causes side effects
      */
     private static void playRound(Deck deck, List<Card> hand, Player player, int numberOfCardsToDeal) {
         deal(deck, hand, numberOfCardsToDeal);
@@ -255,7 +257,6 @@ public class BlackjackGameSimulator {
      * @param dealer The Dealer
      * @param player the Player or participant
      * @param bet the size of the bet that is being wagered.
-     * @return Nothing. Just causes side effects
      */
     private static void decideWhoWins(Dealer dealer, Player player, int bet) {
         if(player.getPoints() > dealer.getPoints()) {
@@ -269,7 +270,8 @@ public class BlackjackGameSimulator {
 
     /**
      * This method handles setting the bankroll. Note: cannot enter an invalid amount or a char.
-     * @return Nothing. Just causes side effects
+     * @param sc the scanner object needed for inputs
+     * @param p1 the player 1
      */
     private static void getMoney(Scanner sc, Player p1) {
         try {
@@ -281,6 +283,25 @@ public class BlackjackGameSimulator {
             System.out.println("That is not a valid dollar amount. We are just going to set you with $100");
             p1.setBankroll(100);
             sc.nextLine();
+        }
+    }
+
+    /**
+     * Used when describing dealer hand. Only going to describe faceup cards when it's dealers turn. When it's player's
+     * turn, only one card will be described in full.
+     * @param hand The hand that is going to be described
+     * @param player the stringified name of Player or Dealer
+     * @param option only going to reveal card when option is set to 'show'
+     */
+    private static void describeHand(List<Card> hand, String player, String option) {
+        if(option.equals("show")) {
+            for(Card card : hand) {
+                card.turnFaceUp();
+            }
+        }
+
+        for(Card card : hand) {
+            System.out.println(player + " has: " + card.getFace() + " of " + " Suit: " + card.getSuit());
         }
     }
 }
