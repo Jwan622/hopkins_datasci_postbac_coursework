@@ -4,6 +4,11 @@ Class 605.210.81 SU19
 Assignment 10
 */
 
+/**
+ * simple reads from a file and outputs it line by line
+ * @author Jeffrey Wan
+ */
+
 import java.io.*;
 
 public class ChildrenDataReader {
@@ -11,6 +16,7 @@ public class ChildrenDataReader {
         String inputFilePath = args[0];
         String numberOfRecords = args[1];
 
+        // used to display the input file
         printHeader(inputFilePath);
 
         File f = new File(inputFilePath);
