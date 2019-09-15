@@ -63,6 +63,27 @@ Inverting twos complement:
 
 #### Additional Notes**
 
+> Speaking broadly, an ISA is a medium whereby a processor communicates with the human programmer (although there are several other formally identified layers in between the processor and the programmer). A
+
+
+To quickly get the binary of a decimal:
+
+100
+
+write out the powers of 2
+
+____ ___    ____   _____   _____   _____   ____
+1     1       0      0       1       0       0
+
+start with the largest power (the 64 on the very left) and put a 1 there. subtract 64 from 100 and you're left with 36. Take the next biggest power (32) and put a 1 there. Subtract 32 from 36 and you're left with a 4. PUt 0s in the slots in between 4 and 32 and put a 1 in 4. You're done.
+
+#### LEcture notes
+-
+What is an ISA?
+Since we only have 0s and 1st, the hardware tells the software how to interpret these 0s and 1s. The CPU can understand certain things... but and the CPU can say it supports an add or a jump or a NOR or a addi, .. the ISA is the set of instructions that the CPU can understand. If you give the CPU an instruction you can't understand, it can't process it.
+
+
+
 #### Formulas
 
 best way to do bit substraction is to convert binary to decimal, so the subtraction, then convert back.
