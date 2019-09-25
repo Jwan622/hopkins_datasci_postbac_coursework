@@ -8,6 +8,8 @@
 
 #### Additional Notes**
 
+#### Lecture Notes
+
 #### Formulas
 
 #### Outside notes

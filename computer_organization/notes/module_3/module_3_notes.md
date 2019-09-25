@@ -22,6 +22,8 @@ What is the base register of an array:
 
 #### Formulas
 
+![floating_point](floating_point.png)
+
 #### Outside notes
 
 #### Definitions
